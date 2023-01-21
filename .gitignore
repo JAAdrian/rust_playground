@@ -1,3 +1,7 @@
-.venv
-target
+# Build and Python folders
+.venv/
+target/
 Cargo.lock
+
+# Dependency folders
+data/
