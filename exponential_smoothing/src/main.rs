@@ -22,5 +22,5 @@ fn main() {
     let signal = read_signal(FILE_PATH);
     println!("{:?}", &signal[0..10]);
 
-
+    let mut smoother = smoothing::ExponentialSmoother{parent:smoothing::Smoother};
 }
