@@ -18,6 +18,7 @@ fn read_signal(file_path: &str) -> Vec<f64> {
 
 fn main() {
     let signal = read_signal(FILE_PATH);
-
     println!("{:?}", &signal[0..10]);
+
+
 }
