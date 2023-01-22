@@ -1,6 +1,8 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
+mod smoothing;
+
 const FILE_PATH: &str = "data/noisy_input_fs1000Hz.txt";
 
 /// Read a TXT file's context into a float64 vector.
