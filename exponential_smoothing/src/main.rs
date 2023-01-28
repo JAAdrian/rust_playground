@@ -4,7 +4,8 @@ use std::io::{BufRead, BufReader, Write};
 mod smoothing;
 
 const INPUT_FILE_PATH: &str = "data/noisy_input_fs1000Hz.txt";
-const OUTPUT_FILE_PATH: &str = "data/smoothed_output_fs1000Hz.txt";
+const NAIVLY_OUTPUT_FILE_PATH: &str = "data/smoothed_output_fs1000Hz.txt";
+const ALPHA_BETA_OUTPUT_FILE_PATH: &str = "data/smoothed_output_fs1000Hz.txt";
 const SAMPLE_RATE: i32 = 1000;
 
 const TIME_CONSTANT: f64 = 10e-3;
@@ -31,9 +32,8 @@ fn write_signal(filepath: &str, data: &Vec<f64>) {
     }
 }
 
-fn main() {
-    let signal = read_signal(INPUT_FILE_PATH);
-
+/// Smooth noisy signal with simple exponential smoothing.
+fn smooth_naivly(signal: Vec<f64>) -> Vec<f64> {
     let mut smoother = smoothing::ExponentialSmoother::new();
 
     smoother.set_initial_state(signal[0]);
@@ -41,10 +41,23 @@ fn main() {
     smoother.set_sample_rate(SAMPLE_RATE);
     smoother.setup();
 
+    let smoothed_signal = smooth_signal(signal, &smoother);
+    return smoothed_signal;
+}
+
+/// Smooth a signal using the smoother object.
+fn smooth_signal(signal: Vec<f64>, smoother: &mut smoothing::ExponentialSmoother) -> Vec<f64> {
     let mut smoothed_signal: Vec<f64> = Vec::with_capacity(signal.len());
     for sample in signal {
-        smoothed_signal.push(smoother.step(sample));
+        smoothed_signal.push(smoother.step(&sample));
     }
+    return smoothed_signal;
+}
 
-    write_signal(OUTPUT_FILE_PATH, &smoothed_signal);
+fn main() {
+    let signal = read_signal(INPUT_FILE_PATH);
+
+    let naivly_smoothed_signal = smooth_naivly(signal);
+
+    write_signal(NAIVLY_OUTPUT_FILE_PATH, &naivly_smoothed_signal);
 }
