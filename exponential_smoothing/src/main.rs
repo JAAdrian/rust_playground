@@ -8,7 +8,6 @@ const SAMPLE_RATE: i32 = 1000;
 
 const TIME_CONSTANT: f64 = 1.0;
 
-
 /// Read a TXT file's context into a float64 vector.
 fn read_signal(file_path: &str) -> Vec<f64> {
     let file = File::open(file_path).expect("File was not found.");

@@ -1,24 +1,22 @@
-
 fn compute_alpha(time_constant: f64, sample_rate: i32) -> f64 {
     let alpha = 1.0 - (-1.0 / ((sample_rate as f64) * time_constant)).exp();
     return alpha;
 }
 
-
 pub struct Smoother {
     sample_rate: i32,
     initial_state: f64,
     time_constant: f64,
-    previous_value: f64
+    previous_value: f64,
 }
 
 impl Smoother {
     pub fn new() -> Smoother {
-        Smoother{
+        Smoother {
             sample_rate: 0,
             initial_state: 0.0,
             time_constant: 0.0,
-            previous_value: 0.0
+            previous_value: 0.0,
         }
     }
 
@@ -41,26 +39,24 @@ impl Smoother {
 
 pub struct ExponentialSmoother {
     parent: Smoother,
-    alpha: f64
+    alpha: f64,
 }
 
 impl ExponentialSmoother {
     pub fn new() -> ExponentialSmoother {
         ExponentialSmoother {
             parent: Smoother::new(),
-            alpha: 0.0
+            alpha: 0.0,
         }
     }
 
-    pub fn setup (&mut self) {
+    pub fn setup(&mut self) {
         self.parent.setup();
         self.alpha = compute_alpha(self.parent.time_constant, self.parent.sample_rate);
     }
 
     pub fn step(&mut self, sample: f64) -> f64 {
-        let smoothed_sample =
-            self.alpha * sample +
-            (1.0 - self.alpha) * self.parent.previous_value;
+        let smoothed_sample = self.alpha * sample + (1.0 - self.alpha) * self.parent.previous_value;
         self.parent.previous_value = smoothed_sample;
 
         return smoothed_sample;
