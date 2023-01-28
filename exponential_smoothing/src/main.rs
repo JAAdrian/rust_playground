@@ -1,12 +1,13 @@
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Write};
 
 mod smoothing;
 
-const FILE_PATH: &str = "data/noisy_input_fs1000Hz.txt";
+const INPUT_FILE_PATH: &str = "data/noisy_input_fs1000Hz.txt";
+const OUTPUT_FILE_PATH: &str = "data/smoothed_output_fs1000Hz.txt";
 const SAMPLE_RATE: i32 = 1000;
 
-const TIME_CONSTANT: f64 = 1.0;
+const TIME_CONSTANT: f64 = 10e-3;
 
 /// Read a TXT file's context into a float64 vector.
 fn read_signal(file_path: &str) -> Vec<f64> {
@@ -21,9 +22,17 @@ fn read_signal(file_path: &str) -> Vec<f64> {
     return content;
 }
 
+/// Write a float64 vector to file.
+fn write_signal(filepath: &str, data: &Vec<f64>) {
+    let mut file = File::create(filepath).expect("The output file could not be opened/created.");
+
+    for sample in data {
+        write!(file, "{}\n", sample).expect("Error writing to file.");
+    }
+}
+
 fn main() {
-    let signal = read_signal(FILE_PATH);
-    println!("{:?}", &signal[0..10]);
+    let signal = read_signal(INPUT_FILE_PATH);
 
     let mut smoother = smoothing::ExponentialSmoother::new();
 
@@ -37,6 +46,5 @@ fn main() {
         smoothed_signal.push(smoother.step(sample));
     }
 
-    println!("\n");
-    println!("{:?}", &smoothed_signal[0..10]);
+    write_signal(OUTPUT_FILE_PATH, &smoothed_signal);
 }
