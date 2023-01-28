@@ -2,6 +2,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader, Write};
 
 mod smoothing;
+use crate::smoothing::SmootherMethods;
 
 const INPUT_FILE_PATH: &str = "data/noisy_input_fs1000Hz.txt";
 const NAIVLY_OUTPUT_FILE_PATH: &str = "data/smoothed_output_fs1000Hz.txt";
@@ -41,12 +42,12 @@ fn smooth_naivly(signal: Vec<f64>) -> Vec<f64> {
     smoother.set_sample_rate(SAMPLE_RATE);
     smoother.setup();
 
-    let smoothed_signal = smooth_signal(signal, &smoother);
+    let smoothed_signal = smooth_signal(signal, smoother);
     return smoothed_signal;
 }
 
 /// Smooth a signal using the smoother object.
-fn smooth_signal(signal: Vec<f64>, smoother: &mut smoothing::ExponentialSmoother) -> Vec<f64> {
+fn smooth_signal(signal: Vec<f64>, mut smoother: smoothing::ExponentialSmoother) -> Vec<f64> {
     let mut smoothed_signal: Vec<f64> = Vec::with_capacity(signal.len());
     for sample in signal {
         smoothed_signal.push(smoother.step(&sample));
