@@ -28,7 +28,7 @@ if __name__ == "__main__":
     fig, ax = pyplot.subplots(figsize=(12, 12 / 1.618))
     ax.plot(time, noisy_data, label="Raw")
     ax.plot(time, naivly_smoothed_data, label="Exponentially Smoothed", linewidth=3)
-    ax.plot(time, naivly_smoothed_data, label=r"$\alpha-\beta$ Smoothed", linewidth=3)
+    ax.plot(time, alpha_beta_smoothed_data, label=r"$\alpha-\beta$ Smoothed", linewidth=3)
     ax.legend()
 
     pyplot.show()
