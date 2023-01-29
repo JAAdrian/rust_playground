@@ -90,6 +90,7 @@ impl ExponentialSmoother {
         ExponentialSmoother {
             parent: Smoother::new(),
             alpha: 0.0,
+        }
     }
 }
 
