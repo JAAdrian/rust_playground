@@ -1,3 +1,15 @@
+pub trait SmootherMethods {
+    fn setup(&mut self);
+    fn step(&mut self, sample: &f64) -> f64;
+    fn set_sample_rate(&mut self, rate: i32);
+    fn set_initial_state(&mut self, state: f64);
+    fn set_time_contant(&mut self, constant: f64);
+}
+
+pub trait AlphaBetaSmootherMethods: SmootherMethods {
+    fn set_time_contant_velocity(&mut self, constant: f64);
+}
+
 /// The smoothing base class. This holds common variables for all smoothers.
 pub struct Smoother {
     sample_rate: i32,
@@ -7,13 +19,6 @@ pub struct Smoother {
 }
 
 /// The common smoothing methods as a trait/interface.
-pub trait SmootherMethods {
-    fn setup(&mut self);
-    fn step(&mut self, sample: &f64) -> f64;
-    fn set_sample_rate(&mut self, rate: i32);
-    fn set_initial_state(&mut self, state: f64);
-    fn set_time_contant(&mut self, constant: f64);
-}
 
 impl SmootherMethods for Smoother {
     fn setup(&mut self) {
@@ -34,6 +39,17 @@ impl SmootherMethods for Smoother {
 
     fn set_time_contant(&mut self, constant: f64) {
         self.time_constant = constant;
+    }
+}
+
+impl Smoother {
+    pub fn new() -> Smoother {
+        Smoother {
+            sample_rate: 0,
+            initial_state: 0.0,
+            time_constant: 0.0,
+            previous_value: 0.0,
+        }
     }
 }
 
@@ -69,6 +85,14 @@ impl SmootherMethods for ExponentialSmoother {
     }
 }
 
+impl ExponentialSmoother {
+    pub fn new() -> ExponentialSmoother {
+        ExponentialSmoother {
+            parent: Smoother::new(),
+            alpha: 0.0,
+    }
+}
+
 /// An alpha-beta smoother for better performance with non-stationary signals.
 pub struct AlphaBetaSmoother {
     parent: Smoother,
@@ -77,10 +101,6 @@ pub struct AlphaBetaSmoother {
     previous_velocity: f64,
     alpha: f64,
     beta: f64,
-}
-
-pub trait AlphaBetaSmootherMethods: SmootherMethods {
-    fn set_time_contant_velocity(&mut self, constant: f64);
 }
 
 impl SmootherMethods for AlphaBetaSmoother {
@@ -126,35 +146,21 @@ impl AlphaBetaSmootherMethods for AlphaBetaSmoother {
     }
 }
 
+impl AlphaBetaSmoother {
+    pub fn new() -> AlphaBetaSmoother {
+        AlphaBetaSmoother {
+            parent: Smoother::new(),
+            sample_period: 0.0,
+            time_constant_velocity: 0.0,
+            previous_velocity: 0.0,
+            alpha: 0.0,
+            beta: 0.0,
+        }
+    }
+}
+
 /// Compute alpha value from time constant and sample rate.
 fn compute_alpha(time_constant: f64, sample_rate: i32) -> f64 {
     let alpha = 1.0 - (-1.0 / ((sample_rate as f64) * time_constant)).exp();
     return alpha;
-}
-
-fn new_smoother() -> Smoother {
-    Smoother {
-        sample_rate: 0,
-        initial_state: 0.0,
-        time_constant: 0.0,
-        previous_value: 0.0,
-    }
-}
-
-pub fn new_exponential_smoother() -> ExponentialSmoother {
-    ExponentialSmoother {
-        parent: new_smoother(),
-        alpha: 0.0,
-    }
-}
-
-pub fn new_alpha_beta_smoother() -> AlphaBetaSmoother {
-    AlphaBetaSmoother {
-        parent: new_smoother(),
-        sample_period: 0.0,
-        time_constant_velocity: 0.0,
-        previous_velocity: 0.0,
-        alpha: 0.0,
-        beta: 0.0,
-    }
 }

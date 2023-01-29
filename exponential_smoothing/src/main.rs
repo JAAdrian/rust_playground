@@ -2,8 +2,8 @@ use std::fs::File;
 use std::io::{BufRead, BufReader, Write};
 
 mod smoothing;
-use crate::smoothing::SmootherMethods;
 use crate::smoothing::AlphaBetaSmootherMethods;
+use crate::smoothing::SmootherMethods;
 
 const INPUT_FILE_PATH: &str = "data/noisy_input_fs1000Hz.txt";
 const NAIVLY_OUTPUT_FILE_PATH: &str = "data/smoothed_output_fs1000Hz.txt";
