@@ -11,8 +11,8 @@ const ALPHA_BETA_OUTPUT_FILE_PATH: &str = "data/alpha_beta_smoothed_output_fs100
 const SAMPLE_RATE: i32 = 1000;
 
 const TIME_CONSTANT: f64 = 10e-3;
-const TIME_CONSTANT_ALPHA_BETA: f64 = 10e-3;
-const TIME_CONSTANT_VELOCITY: f64 = 10e-6;
+const TIME_CONSTANT_ALPHA_BETA: f64 = 8e-3;
+const TIME_CONSTANT_VELOCITY: f64 = 2e-2;
 
 /// Read a TXT file's context into a float64 vector.
 fn read_signal(file_path: &str) -> Vec<f64> {
