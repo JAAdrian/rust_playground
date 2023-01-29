@@ -26,7 +26,7 @@ impl SmootherMethods for Smoother {
     }
 
     fn step(&mut self, sample: &f64) -> f64 {
-        return 0.0;
+        return *sample;
     }
 
     fn set_sample_rate(&mut self, rate: i32) {
